@@ -235,7 +235,7 @@ export default function Home() {
 
                   <div className="mt-4 flex items-center gap-1.5 text-sm text-gray-500">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364-.707-.707M6.343 6.343l-.707-.707m12.728 0-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z" />
                     </svg>
                     {formatKm(arac.km)}
                   </div>
@@ -247,9 +247,12 @@ export default function Home() {
                         {formatFiyat(arac.fiyat)}
                       </div>
                     </div>
-                    <button className="px-4 py-2 text-sm font-semibold bg-amber-400 text-gray-900 rounded-lg hover:bg-amber-300 transition-colors">
+                    <a
+                      href={`/araclar/${arac.id}`}
+                      className="px-4 py-2 text-sm font-semibold bg-amber-400 text-gray-900 rounded-lg hover:bg-amber-300 transition-colors"
+                    >
                       İncele
-                    </button>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -257,7 +260,7 @@ export default function Home() {
           </div>
 
           <div className="mt-8 text-center sm:hidden">
-            <a href="#" className="text-sm font-medium text-amber-600 hover:text-amber-700 transition-colors">
+            <a href="/araclar" className="text-sm font-medium text-amber-600 hover:text-amber-700 transition-colors">
               Tüm araçları gör →
             </a>
           </div>
