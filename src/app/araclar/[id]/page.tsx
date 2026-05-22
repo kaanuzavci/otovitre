@@ -2,6 +2,7 @@
 
 import { use, useState } from "react";
 import Link from "next/link";
+import FadeIn from '@/components/FadeIn';
 
 /* ── Tipler ─────────────────────────────────────── */
 
@@ -256,15 +257,17 @@ export default function AracDetayPage({
       ) : (
         <>
           {/* ── BREADCRUMB ── */}
-          <div className="bg-gray-50 border-b border-gray-100 px-6 py-3">
-            <div className="max-w-6xl mx-auto flex items-center gap-2 text-sm text-gray-500">
-              <Link href="/" className="hover:text-gray-900 transition-colors">Ana Sayfa</Link>
-              <span>›</span>
-              <Link href="/araclar" className="hover:text-gray-900 transition-colors">Araçlar</Link>
-              <span>›</span>
-              <span className="text-gray-900 font-medium">{arac.marka} {arac.model}</span>
+          <FadeIn>
+            <div className="bg-gray-50 border-b border-gray-100 px-6 py-3">
+              <div className="max-w-6xl mx-auto flex items-center gap-2 text-sm text-gray-500">
+                <Link href="/" className="hover:text-gray-900 transition-colors">Ana Sayfa</Link>
+                <span>›</span>
+                <Link href="/araclar" className="hover:text-gray-900 transition-colors">Araçlar</Link>
+                <span>›</span>
+                <span className="text-gray-900 font-medium">{arac.marka} {arac.model}</span>
+              </div>
             </div>
-          </div>
+          </FadeIn>
 
           {/* ── İÇERİK ── */}
           <div className="max-w-6xl mx-auto px-6 py-8">
@@ -274,102 +277,114 @@ export default function AracDetayPage({
               <div className="flex-1 min-w-0 space-y-8">
 
                 {/* Başlık (mobil) */}
-                <div className="lg:hidden">
-                  <div className="flex items-start justify-between gap-3">
-                    <h1 className="text-2xl font-bold">{arac.marka} {arac.model}</h1>
-                    <span className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-lg ${durumRenk[arac.durum]}`}>
-                      {durumEtiket[arac.durum]}
-                    </span>
-                  </div>
-                  <p className="text-gray-500 mt-1 text-sm">{arac.yil} · {arac.vites} · {arac.yakit}</p>
-                  {arac.oncekiFiyat && (
-                    <div className="inline-flex items-center gap-1.5 mt-3 bg-green-50 text-green-700 text-xs font-semibold px-3 py-1.5 rounded-full">
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                      </svg>
-                      Fiyat Düştü — {formatFiyat(arac.oncekiFiyat - arac.fiyat)} indirim
+                <FadeIn delay={0}>
+                  <div className="lg:hidden">
+                    <div className="flex items-start justify-between gap-3">
+                      <h1 className="text-2xl font-bold">{arac.marka} {arac.model}</h1>
+                      <span className={`shrink-0 text-xs font-semibold px-2.5 py-1 rounded-lg ${durumRenk[arac.durum]}`}>
+                        {durumEtiket[arac.durum]}
+                      </span>
                     </div>
-                  )}
-                </div>
+                    <p className="text-gray-500 mt-1 text-sm">{arac.yil} · {arac.vites} · {arac.yakit}</p>
+                    {arac.oncekiFiyat && (
+                      <div className="inline-flex items-center gap-1.5 mt-3 bg-green-50 text-green-700 text-xs font-semibold px-3 py-1.5 rounded-full">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                        </svg>
+                        Fiyat Düştü — {formatFiyat(arac.oncekiFiyat - arac.fiyat)} indirim
+                      </div>
+                    )}
+                  </div>
+                </FadeIn>
 
                 {/* Fotoğraf Galerisi */}
-                <FotoGalerisi fotoSayisi={arac.fotoSayisi} baslik={`${arac.marka} ${arac.model}`} />
+                <FadeIn delay={100}>
+                  <FotoGalerisi fotoSayisi={arac.fotoSayisi} baslik={`${arac.marka} ${arac.model}`} />
+                </FadeIn>
 
                 {/* Teknik Özellikler */}
-                <div className="bg-white bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-                  <h2 className="font-bold text-gray-900 mb-4">Teknik Özellikler</h2>
-                  <div className="grid sm:grid-cols-2 gap-x-8">
-                    <div>
-                      <OzellikSatir etiket="Marka"       deger={arac.marka} />
-                      <OzellikSatir etiket="Model"       deger={arac.model} />
-                      <OzellikSatir etiket="Yıl"         deger={String(arac.yil)} />
-                      <OzellikSatir etiket="Kilometre"   deger={formatKm(arac.km)} />
-                      <OzellikSatir etiket="Yakıt"       deger={arac.yakit} />
-                    </div>
-                    <div>
-                      <OzellikSatir etiket="Vites"       deger={arac.vites} />
-                      <OzellikSatir etiket="Kasa Tipi"   deger={arac.kasa} />
-                      <OzellikSatir etiket="Renk"        deger={arac.renk} />
-                      <OzellikSatir etiket="Motor Hacmi" deger={`${arac.motorHacmi} L`} />
-                      <OzellikSatir etiket="Durum"       deger={durumEtiket[arac.durum]} />
+                <FadeIn delay={200}>
+                  <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+                    <h2 className="font-bold text-gray-900 mb-4">Teknik Özellikler</h2>
+                    <div className="grid sm:grid-cols-2 gap-x-8">
+                      <div>
+                        <OzellikSatir etiket="Marka"       deger={arac.marka} />
+                        <OzellikSatir etiket="Model"       deger={arac.model} />
+                        <OzellikSatir etiket="Yıl"         deger={String(arac.yil)} />
+                        <OzellikSatir etiket="Kilometre"   deger={formatKm(arac.km)} />
+                        <OzellikSatir etiket="Yakıt"       deger={arac.yakit} />
+                      </div>
+                      <div>
+                        <OzellikSatir etiket="Vites"       deger={arac.vites} />
+                        <OzellikSatir etiket="Kasa Tipi"   deger={arac.kasa} />
+                        <OzellikSatir etiket="Renk"        deger={arac.renk} />
+                        <OzellikSatir etiket="Motor Hacmi" deger={`${arac.motorHacmi} L`} />
+                        <OzellikSatir etiket="Durum"       deger={durumEtiket[arac.durum]} />
+                      </div>
                     </div>
                   </div>
-                </div>
+                </FadeIn>
 
                 {/* Açıklama */}
-                <div className="bg-white bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-                  <h2 className="font-bold text-gray-900 mb-3">Açıklama</h2>
-                  <p className="text-sm text-gray-600 leading-relaxed">{arac.aciklama}</p>
-                </div>
+                <FadeIn delay={300}>
+                  <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+                    <h2 className="font-bold text-gray-900 mb-3">Açıklama</h2>
+                    <p className="text-sm text-gray-600 leading-relaxed">{arac.aciklama}</p>
+                  </div>
+                </FadeIn>
 
                 {/* Donanım */}
-                <div className="bg-white bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-                  <h2 className="font-bold text-gray-900 mb-4">Donanım</h2>
-                  <div className="flex flex-wrap gap-2">
-                    {arac.donanim.map((d) => (
-                      <span key={d} className="flex items-center gap-1.5 text-sm bg-gray-50 border border-gray-100 text-gray-700 px-3 py-1.5 rounded-lg font-medium">
-                        <svg className="w-3.5 h-3.5 text-amber-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
-                        </svg>
-                        {d}
-                      </span>
-                    ))}
+                <FadeIn delay={400}>
+                  <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+                    <h2 className="font-bold text-gray-900 mb-4">Donanım</h2>
+                    <div className="flex flex-wrap gap-2">
+                      {arac.donanim.map((d) => (
+                        <span key={d} className="flex items-center gap-1.5 text-sm bg-gray-50 border border-gray-100 text-gray-700 px-3 py-1.5 rounded-lg font-medium">
+                          <svg className="w-3.5 h-3.5 text-amber-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
+                          </svg>
+                          {d}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                </FadeIn>
 
                 {/* Boya / Ekspertiz */}
-                <div className="bg-white bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-                  <h2 className="font-bold text-gray-900 mb-2">Boya & Ekspertiz</h2>
-                  <div className="flex flex-wrap gap-2 mb-5">
-                    {(["orijinal", "boyali", "lokal_boyali", "degisen"] as HasarDurum[]).map((d) => (
-                      <span key={d} className={`text-xs font-semibold px-2.5 py-1 rounded-lg border ${hasarRenk[d]}`}>
-                        {hasarEtiket[d]}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="grid sm:grid-cols-2 gap-2">
-                    {arac.hasar.map((h) => (
-                      <div key={h.parca} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-                        <div>
-                          <span className="text-sm font-medium text-gray-800">{h.parca}</span>
-                          {h.not && <p className="text-xs text-gray-500 mt-0.5">{h.not}</p>}
-                        </div>
-                        <span className={`ml-3 shrink-0 text-xs font-semibold px-2.5 py-1 rounded-lg border ${hasarRenk[h.durum]}`}>
-                          {hasarEtiket[h.durum]}
+                <FadeIn delay={500}>
+                  <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+                    <h2 className="font-bold text-gray-900 mb-2">Boya & Ekspertiz</h2>
+                    <div className="flex flex-wrap gap-2 mb-5">
+                      {(["orijinal", "boyali", "lokal_boyali", "degisen"] as HasarDurum[]).map((d) => (
+                        <span key={d} className={`text-xs font-semibold px-2.5 py-1 rounded-lg border ${hasarRenk[d]}`}>
+                          {hasarEtiket[d]}
                         </span>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
+                    <div className="grid sm:grid-cols-2 gap-2">
+                      {arac.hasar.map((h) => (
+                        <div key={h.parca} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                          <div>
+                            <span className="text-sm font-medium text-gray-800">{h.parca}</span>
+                            {h.not && <p className="text-xs text-gray-500 mt-0.5">{h.not}</p>}
+                          </div>
+                          <span className={`ml-3 shrink-0 text-xs font-semibold px-2.5 py-1 rounded-lg border ${hasarRenk[h.durum]}`}>
+                            {hasarEtiket[h.durum]}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                </FadeIn>
 
               </div>
 
               {/* SAĞ: Fiyat + İletişim (sticky) */}
-              <div className="w-full lg:w-80 shrink-0">
+              <FadeIn delay={200} className="w-full lg:w-80 shrink-0">
                 <div className="sticky top-24 space-y-4">
 
                   {/* Fiyat Kartı */}
-                  <div className="bg-white bg-white border border-gray-200 rounded-2xl p-6 shadow-sm shadow-sm">
+                  <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
                     {/* Başlık (desktop) */}
                     <div className="hidden lg:block mb-5">
                       <div className="flex items-start justify-between gap-2">
@@ -471,7 +486,7 @@ export default function AracDetayPage({
                     Tüm araçlara dön
                   </Link>
                 </div>
-              </div>
+              </FadeIn>
 
             </div>
           </div>
