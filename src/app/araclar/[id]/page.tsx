@@ -23,7 +23,7 @@ type AracDetay = {
   durum: Durum;
   aciklama: string;
   sahibindenLink?: string;
-  fotoSayisi: number;
+  fotolar: string[];   // "dis-on" | "dis-yan" | "dis-arka" | "ic-on" | "ic-arka" | "motor" | "bagaj" | "jant"
   donanim: string[];
   hasar: { parca: string; durum: HasarDurum; not?: string }[];
 };
@@ -34,7 +34,7 @@ const TUM_PARCALAR = [
   "Tavan", "Arka Bagaj", "Arka Sol Çamurluk", "Arka Sağ Çamurluk",
 ];
 
-function temizHasar(overrides: Partial<Record<string, { durum: HasarDurum; not?: string }>> = []) {
+function temizHasar(overrides: Partial<Record<string, { durum: HasarDurum; not?: string }>> = {}) {
   return TUM_PARCALAR.map((parca) => {
     const o = (overrides as Record<string, { durum: HasarDurum; not?: string }>)[parca];
     return { parca, durum: o?.durum ?? "orijinal" as HasarDurum, not: o?.not };
@@ -46,7 +46,8 @@ const detaylar: Record<string, AracDetay> = {
     id: "1", marka: "Toyota", model: "Corolla", yil: 2021, km: 48_000,
     fiyat: 1_250_000, oncekiFiyat: 1_350_000,
     yakit: "Benzin", vites: "Otomatik", kasa: "Sedan",
-    renk: "Beyaz", motorHacmi: "1.6", durum: "aktif", fotoSayisi: 5,
+    renk: "Beyaz", motorHacmi: "1.6", durum: "aktif",
+    fotolar: ["dis-on", "dis-yan", "dis-arka", "ic-on", "motor"],
     aciklama: "Bakımları yetkili serviste yapılmış, hasarsız, boyasız araç. Trafik sigortası ve muayenesi yeni. İkinci el sertifikası mevcuttur. Takas görüşülür.",
     sahibindenLink: "https://sahibinden.com",
     donanim: ["Geri Görüş Kamerası", "Park Sensörü (Ön/Arka)", "Cruise Control", "Otomatik Klima", "Bluetooth", "USB Bağlantı", "Elektrikli Aynalar", "LED Farlar", "Start/Stop", "Dokunmatik Ekran"],
@@ -56,7 +57,8 @@ const detaylar: Record<string, AracDetay> = {
     id: "2", marka: "Honda", model: "Civic", yil: 2020, km: 62_000,
     fiyat: 1_100_000,
     yakit: "Benzin", vites: "Otomatik", kasa: "Sedan",
-    renk: "Siyah", motorHacmi: "1.5 Turbo", durum: "aktif", fotoSayisi: 4,
+    renk: "Siyah", motorHacmi: "1.5 Turbo", durum: "aktif",
+    fotolar: ["dis-on", "dis-yan", "dis-arka", "ic-on"],
     aciklama: "Türkiye'de satılan Civic. Servis bakımları Honda yetkili serviste yapılmıştır. Boya ve hasar kaydı bulunmamaktadır.",
     donanim: ["Honda Sensing (LaneWatch, Collision Mitigation)", "Apple CarPlay / Android Auto", "Geri Görüş Kamerası", "Park Sensörü", "Isıtmalı Koltuk", "Sunroof", "Elektrikli Bagaj", "LED Farlar"],
     hasar: temizHasar({ "Ön Sol Çamurluk": { durum: "lokal_boyali", not: "Küçük taş izi temizliği" } }),
@@ -65,7 +67,8 @@ const detaylar: Record<string, AracDetay> = {
     id: "3", marka: "Volkswagen", model: "Passat", yil: 2022, km: 31_000,
     fiyat: 1_650_000, oncekiFiyat: 1_750_000,
     yakit: "Dizel", vites: "Otomatik (DSG)", kasa: "Sedan",
-    renk: "Gümüş", motorHacmi: "2.0 TDI", durum: "aktif", fotoSayisi: 6,
+    renk: "Gümüş", motorHacmi: "2.0 TDI", durum: "aktif",
+    fotolar: ["dis-on", "dis-yan", "dis-arka", "ic-on", "ic-arka", "motor"],
     aciklama: "Business paket. Tam donanım. Periyodik bakımlar VW yetkili servisinde yapılmıştır. Hasar kaydı, boya ve değişen yoktur. Şirket aracı olarak kullanılmıştır.",
     sahibindenLink: "https://sahibinden.com",
     donanim: ["Yarı Otonom Sürüş (Lane Assist, ACC)", "Dijital Gösterge Paneli", "Panoramik Cam Tavan", "Isıtmalı/Soğutmalı Ön Koltuklar", "Koltuk Hafızası", "360° Kamera", "Park Assist", "Harman Kardon Ses Sistemi", "Kablosuz Şarj", "Head-Up Display"],
@@ -75,7 +78,8 @@ const detaylar: Record<string, AracDetay> = {
     id: "4", marka: "Ford", model: "Focus", yil: 2019, km: 85_000,
     fiyat: 850_000,
     yakit: "Benzin", vites: "Manuel", kasa: "Hatchback",
-    renk: "Kırmızı", motorHacmi: "1.5 EcoBoost", durum: "aktif", fotoSayisi: 3,
+    renk: "Kırmızı", motorHacmi: "1.5 EcoBoost", durum: "aktif",
+    fotolar: ["dis-on", "dis-yan", "dis-arka", "ic-on"],
     aciklama: "Periyodik bakımları düzenli yapılmış, temiz bir Focus. Boya kaydı yoktur. Km'si yüksek olmasına karşın motor ve şanzıman sağlıklıdır. Muayene geçerli.",
     donanim: ["Bluetooth", "USB Bağlantı", "Cruise Control", "Park Sensörü (Arka)", "Geri Görüş Kamerası", "Otomatik Klima", "LED Farlar"],
     hasar: temizHasar({ "Sol Ön Kapı": { durum: "boyali", not: "Küçük kaporta hasarı giderilmiş" } }),
@@ -84,7 +88,8 @@ const detaylar: Record<string, AracDetay> = {
     id: "5", marka: "Renault", model: "Clio", yil: 2023, km: 12_000,
     fiyat: 980_000, oncekiFiyat: 1_020_000,
     yakit: "Benzin", vites: "Otomatik", kasa: "Hatchback",
-    renk: "Mavi", motorHacmi: "1.0 TCe", durum: "aktif", fotoSayisi: 5,
+    renk: "Mavi", motorHacmi: "1.0 TCe", durum: "aktif",
+    fotolar: ["dis-on", "dis-yan", "dis-arka", "ic-on", "ic-arka"],
     aciklama: "2023 model, neredeyse sıfır gibi. Sigorta ve muayenesi yeni. Sıfır araç garantisi devam etmektedir. Renault yetkili servisinde bakımları yapılmıştır.",
     sahibindenLink: "https://sahibinden.com",
     donanim: ["Apple CarPlay / Android Auto", "Geri Görüş Kamerası", "Park Sensörü (Ön/Arka)", "Otomatik Klima", "LED Farlar", "Şerit Takip Sistemi", "Kör Nokta Uyarısı", "Bluetooth", "Kablosuz Şarj"],
@@ -94,7 +99,8 @@ const detaylar: Record<string, AracDetay> = {
     id: "6", marka: "BMW", model: "3 Serisi", yil: 2021, km: 42_000,
     fiyat: 2_100_000,
     yakit: "Benzin", vites: "Otomatik", kasa: "Sedan",
-    renk: "Beyaz", motorHacmi: "2.0 TwinPower Turbo", durum: "aktif", fotoSayisi: 7,
+    renk: "Beyaz", motorHacmi: "2.0 TwinPower Turbo", durum: "aktif",
+    fotolar: ["dis-on", "dis-yan", "dis-arka", "ic-on", "ic-arka", "jant", "motor"],
     aciklama: "M-Sport paketi ile donatılmış BMW 3 Serisi. BMW Türkiye kayıtlı, yetkili servis bakımlı. Boya ve değişen kaydı bulunmamaktadır. M-Spor deri koltuk, 19 inç M jant.",
     sahibindenLink: "https://sahibinden.com",
     donanim: ["M-Sport Paketi", "Isıtmalı M Koltuklar", "Adaptif Cruise Control", "Head-Up Display", "Harman Kardon Ses Sistemi", "Dijital Gösterge Paneli", "Panoramik Cam Tavan", "Keyless Go", "Geri Görüş Kamerası", "Park Assist", "LED Farlar", "Kablosuz Şarj"],
@@ -104,7 +110,8 @@ const detaylar: Record<string, AracDetay> = {
     id: "7", marka: "Mercedes-Benz", model: "C180", yil: 2020, km: 55_000,
     fiyat: 2_350_000,
     yakit: "Benzin", vites: "Otomatik", kasa: "Sedan",
-    renk: "Siyah", motorHacmi: "1.5 EQ Boost", durum: "satildi", fotoSayisi: 5,
+    renk: "Siyah", motorHacmi: "1.5 EQ Boost", durum: "satildi",
+    fotolar: ["dis-on", "dis-yan", "dis-arka", "ic-on", "ic-arka"],
     aciklama: "SATILMIŞ — Bu araç artık mevcut değildir. Benzer araçlar için bizimle iletişime geçebilirsiniz.",
     donanim: ["MBUX Dokunmatik Ekran", "Geri Görüş Kamerası", "Park Sensörü (Ön/Arka)", "Otomatik Klima", "Isıtmalı Koltuklar", "LED Farlar", "Keyless Go", "Bluetooth", "Apple CarPlay"],
     hasar: temizHasar(),
@@ -113,7 +120,8 @@ const detaylar: Record<string, AracDetay> = {
     id: "8", marka: "Hyundai", model: "Tucson", yil: 2022, km: 28_000,
     fiyat: 1_450_000,
     yakit: "Dizel", vites: "Otomatik", kasa: "SUV",
-    renk: "Gri", motorHacmi: "1.6 CRDi", durum: "aktif", fotoSayisi: 5,
+    renk: "Gri", motorHacmi: "1.6 CRDi", durum: "aktif",
+    fotolar: ["dis-on", "dis-yan", "dis-arka", "ic-on", "ic-arka"],
     aciklama: "Style+ paket, tam donanım. Hyundai Türkiye kayıtlı. Yetkili serviste bakımlı. Hasarsız, boyasız. Takas görüşülür.",
     donanim: ["Geri Görüş Kamerası", "360° Kamera", "Park Sensörü (Ön/Arka)", "Adaptif Cruise Control", "Şerit Takip Sistemi", "Kör Nokta Uyarısı", "Apple CarPlay / Android Auto", "Isıtmalı Ön Koltuklar", "Panoramik Cam Tavan", "LED Farlar", "Elektrikli Bagaj Kapağı"],
     hasar: temizHasar(),
@@ -122,7 +130,8 @@ const detaylar: Record<string, AracDetay> = {
     id: "9", marka: "Kia", model: "Sportage", yil: 2023, km: 8_000,
     fiyat: 1_580_000,
     yakit: "Benzin", vites: "Otomatik", kasa: "SUV",
-    renk: "Beyaz", motorHacmi: "1.6 T-GDI", durum: "rezerve", fotoSayisi: 6,
+    renk: "Beyaz", motorHacmi: "1.6 T-GDI", durum: "rezerve",
+    fotolar: ["dis-on", "dis-yan", "dis-arka", "ic-on", "ic-arka", "jant"],
     aciklama: "REZERVE — Bu araç şu an rezerve edilmiş durumdadır. Rezervasyon düşerse bilgilendirme için bizimle iletişime geçin. 2023 model, sıfıra yakın, garantisi devam etmektedir.",
     donanim: ["360° Görüntüleme Sistemi", "Head-Up Display", "Adaptif Cruise Control", "Şerit Takip Sistemi", "Apple CarPlay / Android Auto", "Isıtmalı/Soğutmalı Koltuklar", "Panoramik Cam Tavan", "Keyless Go", "LED Matrix Farlar", "Kablosuz Şarj", "Elektrikli Bagaj Kapağı"],
     hasar: temizHasar(),
@@ -131,7 +140,8 @@ const detaylar: Record<string, AracDetay> = {
     id: "10", marka: "Skoda", model: "Octavia", yil: 2021, km: 39_000,
     fiyat: 1_180_000,
     yakit: "Dizel", vites: "Otomatik", kasa: "Sedan",
-    renk: "Gri", motorHacmi: "2.0 TDI", durum: "aktif", fotoSayisi: 4,
+    renk: "Gri", motorHacmi: "2.0 TDI", durum: "aktif",
+    fotolar: ["dis-on", "dis-yan", "dis-arka", "ic-on"],
     aciklama: "Style paket. Skoda yetkili servisinde bakımlı. Dizel otomatik, yakıt tasarruflu. Boya ve hasar kaydı yoktur. Sigorta ve muayene geçerli.",
     donanim: ["Columbus Navigasyon Sistemi", "Sanal Gösterge Paneli", "Geri Görüş Kamerası", "Park Sensörü (Ön/Arka)", "Otomatik Klima", "Isıtmalı Ön Koltuklar", "Apple CarPlay / Android Auto", "LED Farlar", "Cruise Control", "Bluetooth", "USB Bağlantı"],
     hasar: temizHasar({ "Ön Sol Çamurluk": { durum: "lokal_boyali", not: "Küçük park çizigi giderilmiş" } }),
@@ -140,7 +150,8 @@ const detaylar: Record<string, AracDetay> = {
     id: "11", marka: "Seat", model: "Leon", yil: 2022, km: 21_000,
     fiyat: 1_050_000,
     yakit: "Benzin", vites: "Otomatik", kasa: "Hatchback",
-    renk: "Beyaz", motorHacmi: "1.5 TSI", durum: "aktif", fotoSayisi: 4,
+    renk: "Beyaz", motorHacmi: "1.5 TSI", durum: "aktif",
+    fotolar: ["dis-on", "dis-yan", "dis-arka", "ic-on", "ic-arka"],
     aciklama: "FR paket. Sportif ve ekonomik kullanım için ideal. Seat yetkili servisinde bakımlı. Boya kaydı yoktur. Sıfır araç teslim belgesi mevcuttur.",
     sahibindenLink: "https://sahibinden.com",
     donanim: ["FR Spor Paketi", "Geri Görüş Kamerası", "Park Sensörü (Ön/Arka)", "Otomatik Klima", "Apple CarPlay / Android Auto", "LED Farlar", "Şerit Takip Sistemi", "Adaptif Cruise Control", "Isıtmalı Ön Koltuklar", "Bluetooth", "USB Bağlantı"],
@@ -150,13 +161,239 @@ const detaylar: Record<string, AracDetay> = {
     id: "12", marka: "Toyota", model: "RAV4", yil: 2023, km: 5_000,
     fiyat: 2_200_000,
     yakit: "Hibrit", vites: "Otomatik (e-CVT)", kasa: "SUV",
-    renk: "Gri", motorHacmi: "2.5 Hibrit", durum: "aktif", fotoSayisi: 7,
+    renk: "Gri", motorHacmi: "2.5 Hibrit", durum: "aktif",
+    fotolar: ["dis-on", "dis-yan", "dis-arka", "ic-on", "ic-arka", "bagaj", "jant"],
     aciklama: "Neredeyse sıfır, hibrit SUV. Toyota yetkili servisinde bakımlı. Sıfır araç garantisi devam etmektedir. Yakıt tüketimi son derece düşük. Tam donanım paket.",
     sahibindenLink: "https://sahibinden.com",
     donanim: ["Toyota Safety Sense (Otonom Acil Frenleme, Şerit Takip)", "360° Kamera", "Head-Up Display", "JBL Ses Sistemi", "Isıtmalı/Soğutmalı Koltuklar", "Koltuk Hafızası", "Panoramik Cam Tavan", "Elektrikli Bagaj Kapağı", "Kablosuz Şarj", "Keyless Go", "LED Matrix Farlar", "Apple CarPlay / Android Auto"],
     hasar: temizHasar(),
   },
 };
+
+/* ── Renk → gradient ── */
+const RENK_GRADYAN: Record<string, { bg: string; text: string }> = {
+  "Beyaz":   { bg: "from-slate-100 to-slate-300", text: "text-slate-400" },
+  "Siyah":   { bg: "from-gray-700 to-gray-950",   text: "text-gray-500"  },
+  "Gümüş":   { bg: "from-zinc-200 to-zinc-400",   text: "text-zinc-500"  },
+  "Kırmızı": { bg: "from-red-500 to-red-800",     text: "text-red-300"   },
+  "Mavi":    { bg: "from-blue-500 to-blue-800",   text: "text-blue-300"  },
+  "Gri":     { bg: "from-gray-400 to-gray-600",   text: "text-gray-200"  },
+};
+
+/* Görsel tipleri ve etiketleri */
+const GORSEL_ETIKET: Record<string, string> = {
+  "dis-on":   "Ön Görünüm",
+  "dis-yan":  "Yan Görünüm",
+  "dis-arka": "Arka Görünüm",
+  "ic-on":    "İç Mekan",
+  "ic-arka":  "Arka Koltuk",
+  "motor":    "Motor",
+  "bagaj":    "Bagaj",
+  "jant":     "Jant",
+};
+
+/* Görsel tipine göre gradient */
+function gorselGradyan(tip: string, renk: string): { bg: string; text: string } {
+  if (tip.startsWith("dis")) {
+    const g = RENK_GRADYAN[renk];
+    return g ?? { bg: "from-gray-400 to-gray-600", text: "text-gray-200" };
+  }
+  if (tip.startsWith("ic")) {
+    return { bg: "from-stone-600 to-stone-900", text: "text-stone-300" };
+  }
+  if (tip === "motor") {
+    return { bg: "from-zinc-700 to-zinc-950", text: "text-zinc-400" };
+  }
+  if (tip === "bagaj") {
+    return { bg: "from-gray-600 to-gray-900", text: "text-gray-400" };
+  }
+  // jant
+  return { bg: "from-slate-600 to-slate-900", text: "text-slate-300" };
+}
+
+/* ── Araç silüeti (SUV / Hatchback / Sedan) ── */
+function AracSilhouette({ kasa, className }: { kasa: string; className?: string }) {
+  if (kasa === "SUV") return (
+    <svg className={className} viewBox="0 0 240 90" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 68 L10 56 L24 42 L68 28 L148 28 L180 40 L222 52 L228 62 L228 68 Z" opacity="0.32" />
+      <circle cx="58"  cy="68" r="18" opacity="0.45" />
+      <circle cx="182" cy="68" r="18" opacity="0.45" />
+      <circle cx="58"  cy="68" r="9"  fill="white" opacity="0.22" />
+      <circle cx="182" cy="68" r="9"  fill="white" opacity="0.22" />
+    </svg>
+  );
+  if (kasa === "Hatchback") return (
+    <svg className={className} viewBox="0 0 240 90" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 68 L12 58 L28 44 L72 30 L152 30 L188 50 L226 58 L228 68 Z" opacity="0.32" />
+      <circle cx="60"  cy="68" r="17" opacity="0.45" />
+      <circle cx="184" cy="68" r="17" opacity="0.45" />
+      <circle cx="60"  cy="68" r="8"  fill="white" opacity="0.22" />
+      <circle cx="184" cy="68" r="8"  fill="white" opacity="0.22" />
+    </svg>
+  );
+  return (
+    <svg className={className} viewBox="0 0 240 90" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 68 L12 58 L26 44 L70 30 L158 30 L190 46 L226 56 L228 68 Z" opacity="0.32" />
+      <circle cx="60"  cy="68" r="17" opacity="0.45" />
+      <circle cx="186" cy="68" r="17" opacity="0.45" />
+      <circle cx="60"  cy="68" r="8"  fill="white" opacity="0.22" />
+      <circle cx="186" cy="68" r="8"  fill="white" opacity="0.22" />
+    </svg>
+  );
+}
+
+/* ── İç mekan ikonu ── */
+function IcMekanIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 240 90" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      {/* Steering wheel */}
+      <circle cx="80" cy="50" r="28" opacity="0.3" />
+      <circle cx="80" cy="50" r="18" opacity="0" />
+      <circle cx="80" cy="50" r="6"  opacity="0.45" />
+      <line x1="80" y1="22" x2="80" y2="44" stroke="currentColor" strokeWidth="4" opacity="0.35" />
+      <line x1="55" y1="65" x2="68" y2="54" stroke="currentColor" strokeWidth="4" opacity="0.35" />
+      <line x1="105" y1="65" x2="92" y2="54" stroke="currentColor" strokeWidth="4" opacity="0.35" />
+      {/* Dashboard */}
+      <rect x="20" y="68" width="200" height="12" rx="4" opacity="0.25" />
+      <rect x="130" y="38" width="80" height="35" rx="6" opacity="0.2" />
+      <rect x="142" y="44" width="56" height="23" rx="4" opacity="0.3" />
+    </svg>
+  );
+}
+
+/* ── Motor ikonu ── */
+function MotorIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 240 90" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <rect x="60"  y="20" width="120" height="60" rx="8" opacity="0.25" />
+      <rect x="80"  y="30" width="80"  height="40" rx="5" opacity="0.35" />
+      <rect x="40"  y="35" width="25"  height="12" rx="3" opacity="0.35" />
+      <rect x="175" y="35" width="25"  height="12" rx="3" opacity="0.35" />
+      <circle cx="120" cy="50" r="16" opacity="0.3" />
+      <circle cx="120" cy="50" r="8"  opacity="0.4" />
+      <rect x="108" y="10" width="8" height="15" rx="3" opacity="0.4" />
+      <rect x="124" y="10" width="8" height="15" rx="3" opacity="0.4" />
+    </svg>
+  );
+}
+
+/* ── Jant ikonu ── */
+function JantIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 120 120" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="55" opacity="0.25" />
+      <circle cx="60" cy="60" r="42" opacity="0.1" />
+      <circle cx="60" cy="60" r="14" opacity="0.4" />
+      {[0,45,90,135,180,225,270,315].map((deg, i) => {
+        const rad = (deg * Math.PI) / 180;
+        const x1 = 60 + 14 * Math.cos(rad);
+        const y1 = 60 + 14 * Math.sin(rad);
+        const x2 = 60 + 42 * Math.cos(rad);
+        const y2 = 60 + 42 * Math.sin(rad);
+        return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="currentColor" strokeWidth="5" opacity="0.3" />;
+      })}
+      <circle cx="60" cy="60" r="55" fill="none" stroke="currentColor" strokeWidth="8" opacity="0.3" />
+    </svg>
+  );
+}
+
+/* ── Fotoğraf galerisi ── */
+function FotoGalerisi({
+  fotolar,
+  renk,
+  kasa,
+  marka,
+  model,
+}: {
+  fotolar: string[];
+  renk: string;
+  kasa: string;
+  marka: string;
+  model: string;
+}) {
+  const [aktif, setAktif] = useState(0);
+
+  function prev() { setAktif((i) => (i - 1 + fotolar.length) % fotolar.length); }
+  function next() { setAktif((i) => (i + 1) % fotolar.length); }
+
+  const aktifTip = fotolar[aktif] ?? "dis-on";
+  const { bg, text } = gorselGradyan(aktifTip, renk);
+  const etiket = GORSEL_ETIKET[aktifTip] ?? aktifTip;
+
+  function renderIcon() {
+    if (aktifTip.startsWith("ic")) return <IcMekanIcon className={`w-56 h-auto ${text}`} />;
+    if (aktifTip === "motor")       return <MotorIcon  className={`w-56 h-auto ${text}`} />;
+    if (aktifTip === "jant")        return <JantIcon   className={`w-28 h-28 ${text}`} />;
+    if (aktifTip === "bagaj")       return <AracSilhouette kasa={kasa} className={`w-52 h-auto ${text} opacity-70 scale-x-[-1]`} />;
+    return <AracSilhouette kasa={kasa} className={`w-52 h-auto ${text}`} />;
+  }
+
+  return (
+    <div className="space-y-3">
+      {/* Ana görsel */}
+      <div className={`relative bg-gradient-to-br ${bg} rounded-2xl overflow-hidden aspect-[16/10] flex flex-col items-center justify-center`}>
+        {/* Watermark */}
+        <span className={`absolute text-[140px] font-black leading-none select-none pointer-events-none ${text} opacity-5`} aria-hidden>
+          {marka[0]}
+        </span>
+
+        {renderIcon()}
+
+        {/* Görünüm etiketi */}
+        <p className={`relative mt-3 text-xs font-semibold ${text} opacity-60 select-none`}>
+          {marka} {model} · {etiket}
+        </p>
+
+        {/* Sayaç */}
+        <div className="absolute bottom-3 right-3 bg-black/40 text-white text-xs font-medium px-2.5 py-1 rounded-lg backdrop-blur-sm">
+          {aktif + 1} / {fotolar.length}
+        </div>
+
+        {/* Ok butonları */}
+        {fotolar.length > 1 && (
+          <>
+            <button
+              onClick={prev}
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-all"
+            >
+              <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+              </svg>
+            </button>
+            <button
+              onClick={next}
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-all"
+            >
+              <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+              </svg>
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* Küçük resimler */}
+      <div className="flex gap-2">
+        {fotolar.map((tip, i) => {
+          const { bg: tBg, text: tText } = gorselGradyan(tip, renk);
+          return (
+            <button
+              key={i}
+              onClick={() => setAktif(i)}
+              className={`flex-1 aspect-[4/3] rounded-xl overflow-hidden border-2 transition-all bg-gradient-to-br ${tBg} flex items-center justify-center ${
+                i === aktif ? "border-amber-400 shadow-sm" : "border-transparent opacity-60 hover:opacity-100"
+              }`}
+            >
+              <span className={`text-[8px] font-semibold ${tText} opacity-70 select-none leading-none text-center px-1`}>
+                {(GORSEL_ETIKET[tip] ?? tip).split(" ")[0]}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 function formatFiyat(f: number) {
   return new Intl.NumberFormat("tr-TR").format(f) + " ₺";
@@ -166,10 +403,10 @@ function formatKm(k: number) {
 }
 
 const hasarRenk: Record<HasarDurum, string> = {
-  orijinal:    "bg-green-50  text-green-700  border-green-200",
-  boyali:      "bg-amber-50  text-amber-700  border-amber-200",
-  lokal_boyali:"bg-orange-50 text-orange-700 border-orange-200",
-  degisen:     "bg-red-50    text-red-700    border-red-200",
+  orijinal:     "bg-green-50  text-green-700  border-green-200",
+  boyali:       "bg-amber-50  text-amber-700  border-amber-200",
+  lokal_boyali: "bg-orange-50 text-orange-700 border-orange-200",
+  degisen:      "bg-red-50    text-red-700    border-red-200",
 };
 const hasarEtiket: Record<HasarDurum, string> = {
   orijinal: "Orijinal", boyali: "Boyalı", lokal_boyali: "Lokal Boyalı", degisen: "Değişen",
@@ -183,47 +420,6 @@ const durumRenk: Record<Durum, string> = {
 const durumEtiket: Record<Durum, string> = {
   aktif: "Satışta", satildi: "Satıldı", rezerve: "Rezerve",
 };
-
-function FotoGalerisi({ fotoSayisi }: { fotoSayisi: number }) {
-  const [aktif, setAktif] = useState(0);
-  function prev() { setAktif((i) => (i - 1 + fotoSayisi) % fotoSayisi); }
-  function next() { setAktif((i) => (i + 1) % fotoSayisi); }
-
-  return (
-    <div className="space-y-3">
-      <div className="relative bg-gray-100 rounded-2xl overflow-hidden aspect-[16/10] flex items-center justify-center">
-        <svg className="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" strokeWidth={1} viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-        </svg>
-        <div className="absolute bottom-3 right-3 bg-black/50 text-white text-xs font-medium px-2.5 py-1 rounded-lg backdrop-blur-sm">
-          {aktif + 1} / {fotoSayisi}
-        </div>
-        {fotoSayisi > 1 && (
-          <>
-            <button onClick={prev} className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-all">
-              <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-              </svg>
-            </button>
-            <button onClick={next} className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-all">
-              <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-              </svg>
-            </button>
-          </>
-        )}
-      </div>
-      <div className="flex gap-2">
-        {Array.from({ length: fotoSayisi }).map((_, i) => (
-          <button key={i} onClick={() => setAktif(i)}
-            className={`flex-1 aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 border-2 transition-all ${
-              i === aktif ? "border-amber-400" : "border-transparent hover:border-gray-300"
-            }`} />
-        ))}
-      </div>
-    </div>
-  );
-}
 
 function OzellikSatir({ etiket, deger }: { etiket: string; deger: string }) {
   return (
@@ -287,7 +483,7 @@ export default function AracDetayPage({ params }: { params: Promise<{ id: string
           <div className="max-w-6xl mx-auto px-6 py-8">
             <div className="flex flex-col lg:flex-row gap-8">
 
-              {/* SOL */}
+              {/* ── SOL ── */}
               <div className="flex-1 min-w-0 space-y-8">
 
                 <FadeIn delay={0}>
@@ -311,7 +507,13 @@ export default function AracDetayPage({ params }: { params: Promise<{ id: string
                 </FadeIn>
 
                 <FadeIn delay={100}>
-                  <FotoGalerisi fotoSayisi={arac.fotoSayisi} />
+                  <FotoGalerisi
+                    fotolar={arac.fotolar}
+                    renk={arac.renk}
+                    kasa={arac.kasa}
+                    marka={arac.marka}
+                    model={arac.model}
+                  />
                 </FadeIn>
 
                 <FadeIn delay={200}>
@@ -387,7 +589,7 @@ export default function AracDetayPage({ params }: { params: Promise<{ id: string
 
               </div>
 
-              {/* SAĞ */}
+              {/* ── SAĞ ── */}
               <FadeIn delay={200} className="w-full lg:w-80 shrink-0">
                 <div className="sticky top-24 space-y-4">
 
@@ -444,7 +646,6 @@ export default function AracDetayPage({ params }: { params: Promise<{ id: string
                           Bu araç satılmıştır
                         </div>
                       )}
-
                       {arac.durum === "rezerve" && (
                         <div className="text-center py-3 bg-amber-50 border border-amber-100 rounded-xl text-sm text-amber-700 font-medium">
                           Araç rezervedir — listeye girmek için arayın
