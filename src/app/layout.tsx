@@ -13,8 +13,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "OtoVitre — Güvenilir Araç Galerisi",
-  description: "Profesyonel ekspertiz ve şeffaf fiyatlandırma ile güvenilir araç alım satımı.",
+  title: {
+    default: "OtoVitre — Güvenilir Araç Galerisi",
+    template: "%s | OtoVitre",
+  },
+  description:
+    "İstanbul'un güvenilir araç galerisi. Profesyonel ekspertiz, şeffaf fiyatlandırma ve kapsamlı araç stoku. Benzin, dizel, hibrit seçenekler.",
+  keywords: ["araç galerisi", "ikinci el araç", "istanbul araba", "ekspertiz", "satılık araç"],
+  openGraph: {
+    type: "website",
+    locale: "tr_TR",
+    siteName: "OtoVitre",
+    title: "OtoVitre — Güvenilir Araç Galerisi",
+    description: "İstanbul'un güvenilir araç galerisi. Şeffaf ekspertiz ve dürüst fiyatlandırma.",
+  },
 };
 
 export default function RootLayout({
