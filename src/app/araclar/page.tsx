@@ -79,6 +79,7 @@ function AracSilhouette({ kasa, className }: { kasa: string; className?: string 
 
 /* ── Filtre tipi ── */
 type Filtreler = {
+  arama: string;
   markalar: string[];
   yakitTipleri: string[];
   vitesTipleri: string[];
@@ -92,6 +93,7 @@ type Filtreler = {
 };
 
 const bosFiltreler: Filtreler = {
+  arama: "",
   markalar: [], yakitTipleri: [], vitesTipleri: [], kasaTipleri: [], durumlar: [],
   minFiyat: "", maxFiyat: "",
   minYil: "", maxYil: "",
@@ -221,6 +223,7 @@ export default function AraclarPage() {
   }
 
   const aktifFiltreAdet =
+    (filtreler.arama ? 1 : 0) +
     filtreler.markalar.length +
     filtreler.yakitTipleri.length +
     filtreler.vitesTipleri.length +
@@ -240,6 +243,11 @@ export default function AraclarPage() {
     const [minKm, maxKm] = parseKmAraligi(filtreler.kmAraligi);
 
     let sonuc = tumAraclar.filter((a) => {
+      if (filtreler.arama) {
+        const q = filtreler.arama.toLowerCase().trim();
+        const hedef = `${a.marka} ${a.model} ${a.yil}`.toLowerCase();
+        if (!hedef.includes(q)) return false;
+      }
       if (filtreler.markalar.length     && !filtreler.markalar.includes(a.marka))      return false;
       if (filtreler.yakitTipleri.length && !filtreler.yakitTipleri.includes(a.yakit))  return false;
       if (filtreler.vitesTipleri.length && !filtreler.vitesTipleri.includes(a.vites))  return false;
@@ -291,27 +299,52 @@ export default function AraclarPage() {
       </header>
 
       {/* ── SAYFA BAŞLIĞI ── */}
-      <div className="bg-white border-b border-gray-100 px-6 py-8">
+      <div className="bg-white border-b border-gray-100 px-6 py-6">
         <FadeIn>
-          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Tüm Araçlar</h1>
-              <p className="text-sm text-gray-500 mt-1">{goruntulenecek.length} araç listeleniyor</p>
+          <div className="max-w-6xl mx-auto space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Tüm Araçlar</h1>
+                <p className="text-sm text-gray-500 mt-1">{goruntulenecek.length} araç listeleniyor</p>
+              </div>
+              <button
+                onClick={() => setMobilFiltreAcik((v) => !v)}
+                className="sm:hidden flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
+                </svg>
+                Filtreler
+                {aktifFiltreAdet > 0 && (
+                  <span className="bg-amber-400 text-gray-900 text-xs font-bold px-1.5 py-0.5 rounded-full">
+                    {aktifFiltreAdet}
+                  </span>
+                )}
+              </button>
             </div>
-            <button
-              onClick={() => setMobilFiltreAcik((v) => !v)}
-              className="sm:hidden flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
+            {/* Arama kutusu */}
+            <div className="relative">
+              <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
               </svg>
-              Filtreler
-              {aktifFiltreAdet > 0 && (
-                <span className="bg-amber-400 text-gray-900 text-xs font-bold px-1.5 py-0.5 rounded-full">
-                  {aktifFiltreAdet}
-                </span>
+              <input
+                type="text"
+                placeholder="Marka, model veya yıl ara... (ör: BMW, Corolla, 2023)"
+                value={filtreler.arama}
+                onChange={(e) => setFiltreler((prev) => ({ ...prev, arama: e.target.value }))}
+                className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400 bg-white transition-colors"
+              />
+              {filtreler.arama && (
+                <button
+                  onClick={() => setFiltreler((prev) => ({ ...prev, arama: "" }))}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-gray-100 text-gray-400"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                  </svg>
+                </button>
               )}
-            </button>
+            </div>
           </div>
         </FadeIn>
       </div>
