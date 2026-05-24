@@ -4,6 +4,8 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import FadeIn from '@/components/FadeIn';
 import Image from "next/image";
+import Navbar from '@/components/Navbar';
+import { useKarsilastir } from '@/contexts/KarsilastirContext';
 
 type Durum = "aktif" | "satildi" | "rezerve";
 
@@ -210,6 +212,7 @@ export default function AraclarPage() {
   const [siralama, setSiralama]   = useState("yil-azalan");
   const [mobilFiltreAcik, setMobilFiltreAcik] = useState(false);
   const [imgHatalari, setImgHatalari] = useState<Record<string, boolean>>({});
+  const { ekle, cikar, isSecili, dolu } = useKarsilastir();
 
   function toggle(
     alan: "markalar" | "yakitTipleri" | "vitesTipleri" | "kasaTipleri" | "durumlar",
@@ -279,26 +282,7 @@ export default function AraclarPage() {
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 font-sans antialiased">
 
-      {/* ── NAVBAR ── */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold tracking-tight">OtoVitre</Link>
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
-            <Link href="/araclar" className="text-gray-900 font-semibold">Araçlar</Link>
-            <Link href="/#hakkimizda" className="hover:text-gray-900 transition-colors">Hakkımızda</Link>
-            <Link href="/#iletisim"   className="hover:text-gray-900 transition-colors">İletişim</Link>
-          </nav>
-          <a
-            href="tel:05320000000"
-            className="hidden md:flex items-center gap-2 text-sm font-semibold text-gray-900 hover:text-amber-600 transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 6v.75Z" />
-            </svg>
-            0532 000 00 00
-          </a>
-        </div>
-      </header>
+      <Navbar />
 
       {/* ── SAYFA BAŞLIĞI ── */}
       <div className="bg-white border-b border-gray-100 px-6 py-6">
@@ -490,14 +474,41 @@ export default function AraclarPage() {
               <svg className="w-12 h-12 mx-auto mb-4 text-gray-200" fill="none" stroke="currentColor" strokeWidth={1.2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
               </svg>
-              <p className="font-medium text-gray-600 mb-1">Araç bulunamadı</p>
-              <p className="text-sm">Filtreleri değiştirerek tekrar deneyin.</p>
-              <button
-                onClick={() => setFiltreler(bosFiltreler)}
-                className="mt-4 text-sm text-amber-600 font-medium hover:text-amber-700"
-              >
-                Filtreleri temizle
-              </button>
+              {filtreler.arama ? (
+                <>
+                  <p className="font-medium text-gray-700 mb-1">
+                    &ldquo;{filtreler.arama}&rdquo; için araç bulunamadı
+                  </p>
+                  <p className="text-sm text-gray-400">Farklı bir arama deneyin veya filtreleri kaldırın.</p>
+                  <div className="flex items-center justify-center gap-3 mt-5">
+                    <button
+                      onClick={() => setFiltreler((p) => ({ ...p, arama: "" }))}
+                      className="px-4 py-2 text-sm font-medium bg-amber-400 text-gray-900 rounded-lg hover:bg-amber-300 transition-colors"
+                    >
+                      Aramayı Temizle
+                    </button>
+                    {aktifFiltreAdet > 1 && (
+                      <button
+                        onClick={() => setFiltreler(bosFiltreler)}
+                        className="px-4 py-2 text-sm font-medium border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors"
+                      >
+                        Tüm Filtreleri Temizle
+                      </button>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="font-medium text-gray-600 mb-1">Araç bulunamadı</p>
+                  <p className="text-sm">Seçili filtrelerle eşleşen araç yok.</p>
+                  <button
+                    onClick={() => setFiltreler(bosFiltreler)}
+                    className="mt-4 px-4 py-2 text-sm font-medium bg-amber-400 text-gray-900 rounded-lg hover:bg-amber-300 transition-colors"
+                  >
+                    Tüm Filtreleri Temizle
+                  </button>
+                </>
+              )}
             </div>
           ) : (
             <div key={gridKey} className="grid sm:grid-cols-2 gap-5">
@@ -583,7 +594,46 @@ export default function AraclarPage() {
                           ))}
                         </div>
 
-                        <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                        {/* Karşılaştır butonu */}
+                        {!satildi && (
+                          <button
+                            onClick={() => {
+                              if (isSecili(arac.id)) {
+                                cikar(arac.id);
+                              } else {
+                                ekle({ id: arac.id, marka: arac.marka, model: arac.model, yil: arac.yil });
+                              }
+                            }}
+                            disabled={!isSecili(arac.id) && dolu}
+                            className={`w-full mt-3 flex items-center justify-center gap-1.5 py-2 text-xs font-semibold rounded-lg border transition-all ${
+                              isSecili(arac.id)
+                                ? "bg-amber-50 border-amber-300 text-amber-700"
+                                : dolu
+                                ? "bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed"
+                                : "bg-gray-50 border-gray-200 text-gray-500 hover:bg-amber-50 hover:border-amber-200 hover:text-amber-600"
+                            }`}
+                          >
+                            {isSecili(arac.id) ? (
+                              <>
+                                <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z" clipRule="evenodd" />
+                                </svg>
+                                Karşılaştırmaya Eklendi
+                              </>
+                            ) : dolu ? (
+                              "Maks. 3 araç seçildi"
+                            ) : (
+                              <>
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 4.5v15m6-15v15M3.75 9h16.5M3.75 15h16.5" />
+                                </svg>
+                                Karşılaştır
+                              </>
+                            )}
+                          </button>
+                        )}
+
+                        <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
                           <div>
                             <div className="text-xs text-gray-400 font-medium">Fiyat</div>
                             <div className="text-lg font-bold text-gray-900 mt-0.5">

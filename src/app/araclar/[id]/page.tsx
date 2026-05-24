@@ -4,6 +4,7 @@ import { use, useState } from "react";
 import Link from "next/link";
 import FadeIn from '@/components/FadeIn';
 import Image from "next/image";
+import Navbar from '@/components/Navbar';
 
 type Durum       = "aktif" | "satildi" | "rezerve";
 type HasarDurum  = "orijinal" | "boyali" | "lokal_boyali" | "degisen";
@@ -468,22 +469,7 @@ export default function AracDetayPage({ params }: { params: Promise<{ id: string
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 font-sans antialiased">
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold tracking-tight">OtoVitre</Link>
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600">
-            <Link href="/araclar" className="hover:text-gray-900 transition-colors">Araçlar</Link>
-            <Link href="/#hakkimizda" className="hover:text-gray-900 transition-colors">Hakkımızda</Link>
-            <Link href="/#iletisim" className="hover:text-gray-900 transition-colors">İletişim</Link>
-          </nav>
-          <a href="tel:05320000000" className="hidden md:flex items-center gap-2 text-sm font-semibold text-gray-900 hover:text-amber-600 transition-colors">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 6v.75Z" />
-            </svg>
-            0532 000 00 00
-          </a>
-        </div>
-      </header>
+      <Navbar />
 
       {!arac ? (
         <div className="max-w-6xl mx-auto px-6 py-32 text-center">
