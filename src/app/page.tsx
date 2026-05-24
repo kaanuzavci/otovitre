@@ -2,6 +2,7 @@ import FadeIn from '@/components/FadeIn';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
+import OneCikanAracKarti from '@/components/OneCikanAracKarti';
 
 const onecikaranAraclar = [
   { id: "1", marka: "Toyota",     model: "Corolla",  yil: 2021, km: 48_000, fiyat: 1_250_000, yakit: "Benzin", vites: "Otomatik", kasa: "Sedan",     renk: "Beyaz"   },
@@ -16,18 +17,6 @@ const istatistikler = [
   { sayi: "%100", etiket: "Şeffaf Ekspertiz"   },
 ];
 
-const RENK_GRADYAN: Record<string, { bg: string; text: string }> = {
-  "Beyaz": { bg: "from-slate-100 to-slate-300", text: "text-slate-400" },
-  "Gri":   { bg: "from-gray-400 to-gray-600",   text: "text-gray-200"  },
-  "Siyah": { bg: "from-gray-700 to-gray-950",   text: "text-gray-500"  },
-};
-
-function formatFiyat(fiyat: number) {
-  return new Intl.NumberFormat("tr-TR").format(fiyat) + " ₺";
-}
-function formatKm(km: number) {
-  return new Intl.NumberFormat("tr-TR").format(km) + " km";
-}
 
 export default function Home() {
   return (
@@ -171,56 +160,9 @@ export default function Home() {
           </FadeIn>
 
           <div className="grid sm:grid-cols-3 gap-6">
-            {onecikaranAraclar.map((arac, index) => {
-              const g = RENK_GRADYAN[arac.renk] ?? { bg: "from-gray-200 to-gray-300", text: "text-gray-400" };
-              return (
-                <FadeIn key={arac.id} delay={index * 150}>
-                  <div className="group bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
-                    {/* Görsel */}
-                    <div className={`relative h-52 flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br ${g.bg}`}>
-                      <span className={`absolute text-[100px] font-black leading-none select-none pointer-events-none ${g.text} opacity-10`} aria-hidden>
-                        {arac.marka[0]}
-                      </span>
-                      <div className={`relative text-center select-none`}>
-                        <p className={`text-xl font-black tracking-tight ${g.text} opacity-40`}>{arac.marka}</p>
-                        <p className={`text-sm ${g.text} opacity-30`}>{arac.model}</p>
-                      </div>
-                      <div className="absolute top-3 left-3 bg-black/40 backdrop-blur-sm text-white text-xs font-bold px-2.5 py-1 rounded-lg">
-                        {arac.yil}
-                      </div>
-                      <div className="absolute bottom-3 left-3 bg-black/30 backdrop-blur-sm text-white text-xs px-2.5 py-1 rounded-lg">
-                        {formatKm(arac.km)}
-                      </div>
-                    </div>
-
-                    <div className="p-5">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <h3 className="font-bold text-gray-900 text-lg">{arac.marka} {arac.model}</h3>
-                          <div className="flex items-center gap-2 mt-1.5">
-                            {[arac.yakit, arac.vites, arac.kasa].map((e) => (
-                              <span key={e} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-md font-medium">{e}</span>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-between">
-                        <div>
-                          <div className="text-xs text-gray-400 font-medium">Fiyat</div>
-                          <div className="text-xl font-bold text-gray-900 mt-0.5">{formatFiyat(arac.fiyat)}</div>
-                        </div>
-                        <Link
-                          href={`/araclar/${arac.id}`}
-                          className="px-4 py-2 text-sm font-semibold bg-amber-400 text-gray-900 rounded-lg hover:bg-amber-300 transition-colors"
-                        >
-                          İncele
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </FadeIn>
-              );
-            })}
+            {onecikaranAraclar.map((arac, index) => (
+              <OneCikanAracKarti key={arac.id} arac={arac} delay={index * 150} />
+            ))}
           </div>
 
           <div className="mt-8 text-center sm:hidden">

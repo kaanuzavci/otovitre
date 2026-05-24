@@ -356,7 +356,7 @@ export default function AraclarPage() {
         {/* ── FİLTRE SIDEBAR ── */}
         <aside className={`${mobilFiltreAcik ? "block" : "hidden"} sm:block w-full sm:w-64 shrink-0`}>
           <div
-            className="card-animate bg-white border border-gray-200 rounded-2xl p-6 shadow-sm sticky top-24"
+            className="card-animate bg-white border border-gray-200 rounded-2xl p-6 shadow-sm sticky top-24 sm:max-h-[calc(100vh-7rem)] sm:overflow-y-auto"
             style={{ animationDelay: "100ms" }}
           >
             <div className="flex items-center justify-between mb-6">
