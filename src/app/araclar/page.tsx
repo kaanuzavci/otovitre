@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import FadeIn from '@/components/FadeIn';
+import Image from "next/image";
 
 type Durum = "aktif" | "satildi" | "rezerve";
 
@@ -208,6 +209,7 @@ export default function AraclarPage() {
   const [filtreler, setFiltreler] = useState<Filtreler>(bosFiltreler);
   const [siralama, setSiralama]   = useState("yil-azalan");
   const [mobilFiltreAcik, setMobilFiltreAcik] = useState(false);
+  const [imgHatalari, setImgHatalari] = useState<Record<string, boolean>>({});
 
   function toggle(
     alan: "markalar" | "yakitTipleri" | "vitesTipleri" | "kasaTipleri" | "durumlar",
@@ -537,18 +539,30 @@ export default function AraclarPage() {
                           {arac.marka} {arac.model}
                         </p>
 
+                        {/* Gerçek resim — varsa gradient + SVG'nin üzerini örter */}
+                        {!imgHatalari[arac.id] && (
+                          <Image
+                            src={`/images/araclar/${arac.id}/dis-on.jpg`}
+                            alt={`${arac.marka} ${arac.model}`}
+                            fill
+                            sizes="(max-width: 640px) 100vw, 50vw"
+                            className="object-cover z-[2]"
+                            onError={() => setImgHatalari(e => ({ ...e, [arac.id]: true }))}
+                          />
+                        )}
+
                         {/* Yıl badge (sol üst) */}
-                        <div className="absolute top-3 left-3 bg-black/40 backdrop-blur-sm text-white text-xs font-bold px-2.5 py-1 rounded-lg">
+                        <div className="absolute top-3 left-3 z-[3] bg-black/40 backdrop-blur-sm text-white text-xs font-bold px-2.5 py-1 rounded-lg">
                           {arac.yil}
                         </div>
 
                         {/* Durum badge (sağ üst) */}
-                        <div className={`absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-lg ${durumRenk[arac.durum]}`}>
+                        <div className={`absolute top-3 right-3 z-[3] text-xs font-semibold px-2.5 py-1 rounded-lg ${durumRenk[arac.durum]}`}>
                           {durumEtiket[arac.durum]}
                         </div>
 
                         {/* Km badge (sol alt) */}
-                        <div className="absolute bottom-3 left-3 bg-black/30 backdrop-blur-sm text-white text-xs px-2.5 py-1 rounded-lg">
+                        <div className="absolute bottom-3 left-3 z-[3] bg-black/30 backdrop-blur-sm text-white text-xs px-2.5 py-1 rounded-lg">
                           {formatKm(arac.km)}
                         </div>
                       </div>

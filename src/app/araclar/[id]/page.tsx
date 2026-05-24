@@ -3,6 +3,7 @@
 import { use, useState } from "react";
 import Link from "next/link";
 import FadeIn from '@/components/FadeIn';
+import Image from "next/image";
 
 type Durum       = "aktif" | "satildi" | "rezerve";
 type HasarDurum  = "orijinal" | "boyali" | "lokal_boyali" | "degisen";
@@ -304,14 +305,17 @@ function FotoGalerisi({
   kasa,
   marka,
   model,
+  aracId,
 }: {
   fotolar: string[];
   renk: string;
   kasa: string;
   marka: string;
   model: string;
+  aracId: string;
 }) {
   const [aktif, setAktif] = useState(0);
+  const [imgErrors, setImgErrors] = useState<Record<number, boolean>>({});
 
   function prev() { setAktif((i) => (i - 1 + fotolar.length) % fotolar.length); }
   function next() { setAktif((i) => (i + 1) % fotolar.length); }
@@ -344,8 +348,22 @@ function FotoGalerisi({
           {marka} {model} · {etiket}
         </p>
 
+        {/* Gerçek resim — varsa gradient + SVG'nin üzerini örter */}
+        {!imgErrors[aktif] && (
+          <Image
+            key={`${aracId}-${aktifTip}`}
+            src={`/images/araclar/${aracId}/${aktifTip}.jpg`}
+            alt={`${marka} ${model} - ${etiket}`}
+            fill
+            sizes="(max-width: 1024px) 100vw, 800px"
+            className="object-cover z-[2]"
+            onError={() => setImgErrors(e => ({ ...e, [aktif]: true }))}
+            priority={aktif === 0}
+          />
+        )}
+
         {/* Sayaç */}
-        <div className="absolute bottom-3 right-3 bg-black/40 text-white text-xs font-medium px-2.5 py-1 rounded-lg backdrop-blur-sm">
+        <div className="absolute bottom-3 right-3 z-[3] bg-black/40 text-white text-xs font-medium px-2.5 py-1 rounded-lg backdrop-blur-sm">
           {aktif + 1} / {fotolar.length}
         </div>
 
@@ -354,7 +372,7 @@ function FotoGalerisi({
           <>
             <button
               onClick={prev}
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-all"
+              className="absolute left-3 top-1/2 -translate-y-1/2 z-[3] w-9 h-9 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-all"
             >
               <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
@@ -362,7 +380,7 @@ function FotoGalerisi({
             </button>
             <button
               onClick={next}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-all"
+              className="absolute right-3 top-1/2 -translate-y-1/2 z-[3] w-9 h-9 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md transition-all"
             >
               <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
@@ -380,13 +398,23 @@ function FotoGalerisi({
             <button
               key={i}
               onClick={() => setAktif(i)}
-              className={`flex-1 aspect-[4/3] rounded-xl overflow-hidden border-2 transition-all bg-gradient-to-br ${tBg} flex items-center justify-center ${
+              className={`relative flex-1 aspect-[4/3] rounded-xl overflow-hidden border-2 transition-all bg-gradient-to-br ${tBg} flex items-center justify-center ${
                 i === aktif ? "border-amber-400 shadow-sm" : "border-transparent opacity-60 hover:opacity-100"
               }`}
             >
               <span className={`text-[8px] font-semibold ${tText} opacity-70 select-none leading-none text-center px-1`}>
                 {(GORSEL_ETIKET[tip] ?? tip).split(" ")[0]}
               </span>
+              {!imgErrors[i] && (
+                <Image
+                  src={`/images/araclar/${aracId}/${tip}.jpg`}
+                  alt={GORSEL_ETIKET[tip] ?? tip}
+                  fill
+                  sizes="80px"
+                  className="object-cover"
+                  onError={() => setImgErrors(e => ({ ...e, [i]: true }))}
+                />
+              )}
             </button>
           );
         })}
@@ -513,6 +541,7 @@ export default function AracDetayPage({ params }: { params: Promise<{ id: string
                     kasa={arac.kasa}
                     marka={arac.marka}
                     model={arac.model}
+                    aracId={arac.id}
                   />
                 </FadeIn>
 
